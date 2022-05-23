@@ -5,7 +5,6 @@ variables:
   DOCKER_BUILDKIT: 1
 
 build_amd64_alpine_php-7.4:
-  name: Build 7.4
   extends: .build_amd64_template
   variables:
     DOCKER_FILE: php-7.4/Dockerfile-alpine
@@ -15,7 +14,6 @@ build_amd64_alpine_php-7.4:
     - main
 
 build_amd64_alpine_php-8.0:
-  name: Build 8.0
   extends: .build_amd64_template
   variables:
     DOCKER_FILE: php-8.0/Dockerfile-alpine
