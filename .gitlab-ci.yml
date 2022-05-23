@@ -9,7 +9,7 @@ build_amd64_alpine:
   variables:
     DOCKER_FILE: php-7.4/Dockerfile-alpine
     IMAGE_TAG: 7.4-fpm-composer-alpine
-    PLATFORM: php-fpm-composer:7.4-alpine
+    PLATFORM: 7.4-alpine
   only: 
     - main
 
@@ -30,5 +30,10 @@ build_amd64_alpine:
     - docker buildx create --use
     - docker buildx inspect --bootstrap
     - docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
   script:
-    - docker buildx build --push --platform $PLATFORM -f $DOCKER_FILE --tag $IMAGE_TAG .
+    - docker buildx build \
+          --cache-from type=registry,ref=$CI_REGISTRY_IMAGE:cache \
+          --cache-to type=registry,ref=$CI_REGISTRY_IMAGE:cache \
+          --platform $PLATFORM -f $DOCKER_FILE --tag $IMAGE_TAG .
+    - docker push $DOCKER_USERNAME/$IMAGE_TAG
