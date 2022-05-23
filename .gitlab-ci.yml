@@ -1,6 +1,9 @@
 stages:
   - build
 
+variables:
+  DOCKER_BUILDKIT: 1
+
 build_docker-alpine:
   extends: .build_template
   variables:
@@ -14,12 +17,14 @@ build_docker-alpine:
 
 .build_template:
   stage: build
-  image: docker:stable
+  image: docker:latest
   services:
-    - docker:dind
-  only:
-    - tags
+   - name: docker:dind
+     command: ["--experimental"]
   before_script:
+    - DOCKER_BUILDKIT=1 docker build --platform=local -o . "https://github.com/docker/buildx.git"
+    - mkdir -p ~/.docker/cli-plugins
+    - mv buildx ~/.docker/cli-plugins/docker-buildx
     - docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
   script:
     - docker buildx create --use
