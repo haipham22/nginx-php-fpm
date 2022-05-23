@@ -4,11 +4,22 @@ stages:
 variables:
   DOCKER_BUILDKIT: 1
 
-build_amd64_alpine:
+build_amd64_alpine_php-7.4:
+  name: Build 7.4
   extends: .build_amd64_template
   variables:
     DOCKER_FILE: php-7.4/Dockerfile-alpine
-    IMAGE_TAG: php-fpm-composer:7.4-alpine
+    IMAGE_TAG: $DOCKER_USERNAME/php-fpm-composer:7.4-alpine
+    PLATFORM: linux/arm/v7,linux/arm64/v8,linux/386,linux/amd64
+  only: 
+    - main
+
+build_amd64_alpine_php-8.0:
+  name: Build 8.0
+  extends: .build_amd64_template
+  variables:
+    DOCKER_FILE: php-8.0/Dockerfile-alpine
+    IMAGE_TAG: $DOCKER_USERNAME/php-fpm-composer:8.0-alpine
     PLATFORM: linux/arm/v7,linux/arm64/v8,linux/386,linux/amd64
   only: 
     - main
