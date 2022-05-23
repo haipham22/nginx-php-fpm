@@ -32,8 +32,5 @@ build_amd64_alpine:
     - docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
   script:
-    - docker buildx build \
-          --cache-from type=registry,ref=$CI_REGISTRY_IMAGE:cache \
-          --cache-to type=registry,ref=$CI_REGISTRY_IMAGE:cache \
-          --platform $PLATFORM -f $DOCKER_FILE --tag $IMAGE_TAG .
+    - docker buildx build --cache-from type=registry,ref=$CI_REGISTRY_IMAGE:cache --cache-to type=registry,ref=$CI_REGISTRY_IMAGE:cache --platform $PLATFORM -f $DOCKER_FILE --tag $IMAGE_TAG .
     - docker push $DOCKER_USERNAME/$IMAGE_TAG
