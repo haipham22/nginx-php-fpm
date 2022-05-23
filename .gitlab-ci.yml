@@ -9,7 +9,7 @@ build_amd64_alpine:
   variables:
     DOCKER_FILE: php-7.4/Dockerfile-alpine
     IMAGE_TAG: 7.4-fpm-composer-alpine
-    PLATFORM: "haipham22/php-fpm-composer:7.4-fpm-composer-alpine"
+    PLATFORM: php-fpm-composer:7.4-alpine
   only: 
     - main
 
