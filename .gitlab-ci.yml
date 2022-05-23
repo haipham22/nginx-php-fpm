@@ -7,7 +7,6 @@ variables:
 build_docker-alpine:
   extends: .build_template
   variables:
-    VERSIONTAG: 7.4-fpm-alpine
     DOCKER_FILE: php-7.4/Dockerfile-alpine
     IMAGE_TAG: 7.4-fpm-composer-alpine
   only: 
@@ -32,4 +31,4 @@ build_docker-alpine:
     - docker buildx inspect --bootstrap
     - docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
   script:
-    - docker buildx build --push --platform linux/arm/v7,linux/arm64/v8,linux/386,linux/amd64 -f $DOCKER_FILE --VERSIONTAG=$VERSIONTAG --tag $IMAGE_TAG .
+    - docker buildx build --push --platform linux/arm/v7,linux/arm64/v8,linux/386,linux/amd64 -f $DOCKER_FILE --tag $IMAGE_TAG .
