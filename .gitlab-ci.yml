@@ -4,31 +4,39 @@ stages:
 variables:
   DOCKER_BUILDKIT: 1
 
-build_docker-alpine:
-  extends: .build_template
+build_amd64_alpine:
+  extends: .build_amd64_template
   variables:
     DOCKER_FILE: php-7.4/Dockerfile-alpine
     IMAGE_TAG: 7.4-fpm-composer-alpine
+    PLATFORM: linux/arm/v7,linux/arm64/v8,linux/386,linux/amd64
   only: 
     - main
-  
-  
 
-.build_template:
+build_ard64_alpine:
+  extends: .build_amd64_template
+  variables:
+    DOCKER_FILE: php-7.4/Dockerfile-alpine
+    IMAGE_TAG: haipham22/php-fpm-composer:7.4-fpm-composer-alpine
+  only: 
+    - main
+
+.build_amd64_template:
   stage: build
   image: docker:latest
+  variables:
+    BUILDX_VERSION: v0.8.2
   services:
    - name: docker:dind
      command: ["--experimental"]
   before_script:
-    - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
     - apk add curl
     - mkdir -vp ~/.docker/cli-plugins/
-    - curl --silent -L "https://github.com/docker/buildx/releases/download/v0.5.1/buildx-v0.5.1.linux-amd64" > ~/.docker/cli-plugins/docker-buildx
+    - curl --silent -L "https://github.com/docker/buildx/releases/download/$BUILDX_VERSION/buildx-$BUILDX_VERSION.linux-amd64" > ~/.docker/cli-plugins/docker-buildx
     - chmod a+x ~/.docker/cli-plugins/docker-buildx
     - docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
     - docker buildx create --use
     - docker buildx inspect --bootstrap
     - docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
   script:
-    - docker buildx build --push --platform linux/arm/v7,linux/arm64/v8,linux/386,linux/amd64 -f $DOCKER_FILE --tag $IMAGE_TAG .
+    - docker buildx build --push --platform $PLATFORM -f $DOCKER_FILE --tag $IMAGE_TAG .
