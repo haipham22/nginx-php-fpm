@@ -13,10 +13,6 @@ RUN chmod +x /usr/local/bin/install-php-extensions \
     && rm -rf /var/cache/apk/*
 
 
-# Copy existing application directory contents
-RUN chown -R www-data:www-data /app/
-USER www-data
-
 # Expose port 9000 and start php-fpm server
 EXPOSE 9000
 ENTRYPOINT ["php-fpm"]
