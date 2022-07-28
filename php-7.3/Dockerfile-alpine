@@ -9,6 +9,7 @@ COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr
 
 RUN chmod +x /usr/local/bin/install-php-extensions \
     && sync \
+    && apk add --update linux-headers \
     && install-php-extensions @composer gd pdo_mysql mysqli zip exif \
     && rm -rf /var/cache/apk/*
 
