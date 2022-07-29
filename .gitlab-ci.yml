@@ -1,4 +1,9 @@
+include:
+  - project: 'dependabot-gitlab/dependabot-standalone'
+    file: '.gitlab-ci.yml'
+
 stages:
+  - dependabot
   - build
 
 variables:
@@ -58,6 +63,10 @@ build_amd64_alpine_php-8.0_xdebug:
     PLATFORM: linux/arm/v7,linux/arm64/v8,linux/386,linux/amd64
   only: 
     - main
+
+
+.dependabot-gitlab:
+  stage: dependabot
 
 .build_amd64_template:
   stage: build
