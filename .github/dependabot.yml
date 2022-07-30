@@ -6,7 +6,17 @@
 version: 2
 updates:
   - package-ecosystem: "docker" # See documentation for possible values
-    directory: "/" # Location of package manifests
+    directory: "/php-7.4" # Location of package manifests
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
+  - package-ecosystem: "docker" # See documentation for possible values
+    directory: "/php-7.3" # Location of package manifests
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
+  - package-ecosystem: "docker" # See documentation for possible values
+    directory: "/php-8.0" # Location of package manifests
     schedule:
       interval: "weekly"
     open-pull-requests-limit: 5
