@@ -1,9 +1,0 @@
-version: 2
-updates:
-  - package-ecosystem: "docker"
-    directory: "/"
-    schedule:
-      interval: "daily"
-    rebase-strategy: all
-    auto-merge: true
-    open-pull-requests-limit: 10
