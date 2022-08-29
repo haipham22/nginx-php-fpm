@@ -36,18 +36,18 @@ jobs:
         use-debug: [true, false]
     steps:
       - name: Build and push
-        if: ${{ matrix.use-debug }} === false
+        if: ${{ matrix.use-debug == "false" }}
         uses: docker/build-push-action@v3
         with:
           context: php-${{ matrix.dockerfiles }}/Dockerfile-alpine
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/php-fpm-composer:${{ matrix.dockerfiles }}-alpine
-      - name: Build and push
-        if: ${{ matrix.use-debug }} === true
+          tags: ${{ secrets.DOCKER_USERNAME }}/php-fpm-composer:${{ matrix.dockerfiles }}-alpine
+      - name: Build and push with xdebug
+        if: ${{ matrix.use-debug == "true" }}
         uses: docker/build-push-action@v3
         with:
           context: php-${{ matrix.dockerfiles }}/Dockerfile-alpine-xdebug
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/php-fpm-composer:${{ matrix.dockerfiles }}-alpine-xdebug
+          tags: ${{ secrets.DOCKER_USERNAME }}/php-fpm-composer:${{ matrix.dockerfiles }}-alpine-xdebug
