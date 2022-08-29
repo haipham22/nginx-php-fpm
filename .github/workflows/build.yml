@@ -1,6 +1,8 @@
 name: Build docker php-fpm-composer
 
 on:
+  schedule:
+    - cron: "0 13 * * 1"
   push:
     branches:
       - main
