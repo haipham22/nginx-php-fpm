@@ -39,7 +39,8 @@ jobs:
         if: ${{ matrix.use-debug == 0 }}
         uses: docker/build-push-action@v3
         with:
-          context: php-${{ matrix.dockerfiles }}/Dockerfile-alpine
+          context: .
+          file: php-${{ matrix.dockerfiles }}/Dockerfile-alpine
           platforms: linux/amd64,linux/arm64
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/php-fpm-composer:${{ matrix.dockerfiles }}-alpine
@@ -47,7 +48,8 @@ jobs:
         if: ${{ matrix.use-debug == 1 }}
         uses: docker/build-push-action@v3
         with:
-          context: php-${{ matrix.dockerfiles }}/Dockerfile-alpine-xdebug
+          context: .
+          file: php-${{ matrix.dockerfiles }}/Dockerfile-alpine-xdebug
           platforms: linux/amd64,linux/arm64
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/php-fpm-composer:${{ matrix.dockerfiles }}-alpine-xdebug
