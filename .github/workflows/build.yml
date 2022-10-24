@@ -6,6 +6,7 @@ on:
   push:
     branches:
       - main
+      - pull_request
 
 jobs:
   buildx:
@@ -35,17 +36,19 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           context: .
-          file: php-${{ matrix.dockerfiles }}/Dockerfile-alpine
+          file: Dockerfile-alpine
           platforms: linux/amd64,linux/arm64
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/php-fpm-composer:${{ matrix.dockerfiles }}-alpine
+          build-args: PHP_BUILD_VERSION=${{ matrix.dockerfiles }}
 
       - name: Build and push with xdebug
         if: ${{ matrix.use-debug == 1 }}
         uses: docker/build-push-action@v3
         with:
           context: .
-          file: php-${{ matrix.dockerfiles }}/Dockerfile-alpine-xdebug
+          file: Dockerfile-alpine-xdebug
           platforms: linux/amd64,linux/arm64
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/php-fpm-composer:${{ matrix.dockerfiles }}-alpine-xdebug
+          build-args: PHP_BUILD_VERSION=${{ matrix.dockerfiles }}
