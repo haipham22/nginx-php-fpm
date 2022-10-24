@@ -3,9 +3,6 @@ name: Build docker php-fpm-composer
 on:
   schedule:
     - cron: "0 13 * * 1"
-  pull_request:
-    branches:
-      - main
   push:
     branches:
       - main
@@ -14,7 +11,7 @@ jobs:
   buildx:
     strategy:
       matrix:
-        dockerfiles: ["7.3", "7.4", "8.0"]
+        dockerfiles: ["7.3", "7.4", "8.0", "8.1"]
         use-debug: [1, 0]
     runs-on: ubuntu-latest
     steps:
