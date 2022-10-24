@@ -41,6 +41,7 @@ jobs:
           context: .
           file: Dockerfile-alpine
           platforms: linux/amd64,linux/arm64
+          pull: true
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/php-fpm-composer:${{ matrix.dockerfiles }}-alpine
           build-args: PHP_BUILD_VERSION=${{ matrix.dockerfiles }}
@@ -53,5 +54,6 @@ jobs:
           file: Dockerfile-alpine-xdebug
           platforms: linux/amd64,linux/arm64
           push: true
+          pull: true
           tags: ${{ secrets.DOCKER_USERNAME }}/php-fpm-composer:${{ matrix.dockerfiles }}-alpine-xdebug
           build-args: PHP_BUILD_VERSION=${{ matrix.dockerfiles }}
