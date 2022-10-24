@@ -1,4 +1,6 @@
-FROM php:8.0-fpm-alpine
+ARG PHP_BUILD_VERSION
+
+FROM "php:$PHP_BUILD_VERSION-fpm-alpine"
 
 RUN mkdir -p /app
 
@@ -10,7 +12,7 @@ COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr
 RUN chmod +x /usr/local/bin/install-php-extensions \
     && sync \
     && apk add --update linux-headers \
-    && install-php-extensions @composer gd pdo_mysql mysqli zip exif \
+    && install-php-extensions @composer xdebug gd pdo_mysql mysqli zip exif \
     && rm -rf /var/cache/apk/*
 
 # Expose port 9000 and start php-fpm server
