@@ -1,22 +1,55 @@
 name: Build docker php-fpm-composer
 
 on:
-  # schedule:
-  #   - cron: "0 13 * * 1" # run on every monday
+  schedule:
+    - cron: "0 2 1 * *" # At 02:00 on day-of-month 1.
   push:
     branches:
       - main
 
-concurrency: 
+concurrency:
   group: ${{ github.ref }}
   cancel-in-progress: true
 
+env:
+  IMAGE_NAME: haipham22/nginx-php-fpm
+
 jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Build docker images
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          file: Dockerfile
+          cache-from: ${{ env.IMAGE_NAME }}:8.1-fpm
+          platforms: linux/amd64
+          tags: |-
+            ${{ env.IMAGE_NAME }}:latest
+          build-args: PHP_FPM_VERSION=8.1-fpm-alpine
+
   buildx:
+    needs: prepare
     strategy:
       matrix:
-        dockerfiles: ["7.3", "7.4", "8.0", "8.1"]
-        use-debug: [1, 0]
+        php-version:
+          [
+            "7.3-fpm-alpine",
+            "7.4-fpm-alpine",
+            "8.0-fpm-alpine",
+            "8.1-fpm-alpine",
+            "8.2-fpm-alpine",
+          ]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -35,25 +68,14 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Build and push
-        if: ${{ matrix.use-debug == 0 }}
         uses: docker/build-push-action@v3
         with:
           context: .
-          file: Dockerfile-alpine
+          file: Dockerfile
           platforms: linux/amd64,linux/arm64
           pull: true
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/php-fpm-composer:${{ matrix.dockerfiles }}-alpine
-          build-args: PHP_BUILD_VERSION=${{ matrix.dockerfiles }}
-
-      - name: Build and push with xdebug
-        if: ${{ matrix.use-debug == 1 }}
-        uses: docker/build-push-action@v3
-        with:
-          context: .
-          file: Dockerfile-alpine-xdebug
-          platforms: linux/amd64,linux/arm64
-          push: true
-          pull: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/php-fpm-composer:${{ matrix.dockerfiles }}-alpine-xdebug
-          build-args: PHP_BUILD_VERSION=${{ matrix.dockerfiles }}
+          cache-from: ${{ env.IMAGE_NAME }}:${{ matrix.php-version }}
+          tags: |-
+            ${{ env.IMAGE_NAME }}:${{ matrix.php-version }}
+          build-args: PHP_FPM_VERSION=${{ matrix.php-version }}
