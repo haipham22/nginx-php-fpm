@@ -78,10 +78,8 @@ FROM haipham22/nginx-php-fpm:8.2-fpm-alpine
 
 USER root
 
-# Use the default production configuration for PHP-FPM ($PHP_INI_DIR variable already set by the default image)
-RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
+RUN echo "[Date]" >> "$PHP_INI_DIR/php.ini"
 RUN echo "memory_limit = 128M;" >> "$PHP_INI_DIR/php.ini"
-
 
 # Switch to use a non-root user from here on
 USER www-data
