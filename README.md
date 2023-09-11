@@ -71,6 +71,25 @@ RUN install-php-extensions composer
 RUN composer install --optimize-autoloader --no-interaction --no-progress
 ```
 
+## Add php config to Dockerfile
+
+```Dockerfile
+FROM haipham22/nginx-php-fpm:8.2-fpm-alpine
+
+USER root
+
+# Use the default production configuration for PHP-FPM ($PHP_INI_DIR variable already set by the default image)
+RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
+RUN echo "memory_limit = 128M;" >> "$PHP_INI_DIR/php.ini"
+
+
+# Switch to use a non-root user from here on
+USER www-data
+
+# Add application
+COPY --chown=www-data . /app/
+```
+
 ## Configuration
 
 In [config/](config/) you'll find the default configuration files for Nginx, PHP and PHP-FPM.
