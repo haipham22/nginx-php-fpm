@@ -1,8 +1,6 @@
 name: Build docker php-fpm-composer
 
 on:
-  schedule:
-    - cron: "0 2 1 * *" # At 02:00 on day-of-month 1.
   push:
     branches:
       - main
@@ -44,8 +42,6 @@ jobs:
       matrix:
         php-version:
           [
-            "7.3-fpm-alpine",
-            "7.4-fpm-alpine",
             "8.0-fpm-alpine",
             "8.1-fpm-alpine",
             "8.2-fpm-alpine",
