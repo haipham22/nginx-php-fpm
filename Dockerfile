@@ -36,7 +36,7 @@ COPY config/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 RUN chown -R www-data.www-data /app /run /var/lib/nginx /var/log/nginx
 
 # Switch to use a non-root user from here on
-USER www-data
+# USER www-data
 
 # Add application
 COPY --chown=www-data src/ /app/

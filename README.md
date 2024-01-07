@@ -65,7 +65,7 @@ If you need [Composer](https://getcomposer.org/) in your project, here's an easy
 FROM haipham22/nginx-php-fpm:latest
 
 # Install composer via install-php-extensions
-RUN install-php-extensions composer
+RUN install-php-extensions @composer
 
 # Run composer install to install the dependencies
 RUN composer install --optimize-autoloader --no-interaction --no-progress
@@ -75,8 +75,6 @@ RUN composer install --optimize-autoloader --no-interaction --no-progress
 
 ```Dockerfile
 FROM haipham22/nginx-php-fpm:8.2-fpm-alpine
-
-USER root
 
 RUN echo "[Date]" >> "$PHP_INI_DIR/php.ini"
 RUN echo "memory_limit = 128M;" >> "$PHP_INI_DIR/php.ini"
