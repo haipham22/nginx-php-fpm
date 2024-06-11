@@ -46,6 +46,7 @@ jobs:
             "8.1-fpm-alpine",
             "8.2-fpm-alpine",
             "8.3-fpm-alpine",
+            "8.4-fpm-alpine",
           ]
     runs-on: ubuntu-latest
     steps:
