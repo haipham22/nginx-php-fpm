@@ -111,8 +111,6 @@ docker run -v "`pwd`/php-fpm-settings.conf:/usr/local/etc/php-fpm.d/server.conf"
 
 ## TODO
 
-- [x] Add nginx inside docker
-- [x] Change `fastcgi_pass` to `unix` socket instead `TCP` socket
 - [ ] Optimize docker image size
 - [ ] Add defaults 5xx page html
 - [ ] Testing for running
