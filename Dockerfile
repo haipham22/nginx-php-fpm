@@ -8,7 +8,9 @@ LABEL description="Lightweight container with Nginx 1.24 & PHP based on Alpine L
 
 # Set environment variables
 ENV PORT=8080
-ENV APP_ROOT="/app" # for public path, ex: /app/public
+
+# for public path, ex: /app/public
+ENV APP_ROOT="/app"
 
 # Setup document root
 RUN mkdir -p /app
