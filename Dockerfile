@@ -1,30 +1,29 @@
+# Base image version
 ARG PHP_FPM_VERSION=8.1-fpm-alpine
 
+FROM php:${PHP_FPM_VERSION}
+
+LABEL maintainer="Hải Phạm <contact@haipham.net>"
+LABEL description="Lightweight container with Nginx 1.24 & PHP based on Alpine Linux."
+
+# Set environment variables
 ENV PORT=8080
 ENV APP_ROOT=/app # for public path, ex: /app/public
 
-FROM php:${PHP_FPM_VERSION}
-LABEL Maintainer="Hải Phạm <contact@haipham.net>"
-LABEL Description="Lightweight container with Nginx 1.24 & PHP based on Alpine Linux."
-
 # Setup document root
 RUN mkdir -p /app
-
 WORKDIR /app
 
-# https://github.com/mlocati/docker-php-extension-installer
-# Install packages and remove default server definition
+# Install PHP extensions and required packages
 COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/local/bin/
-
 RUN chmod +x /usr/local/bin/install-php-extensions && \
     sync && \
     install-php-extensions ctype curl dom gd intl mbstring mysqli opcache openssl phar session xml memcached xmlreader && \
     apk add --no-cache curl nginx supervisor && \
     rm -rf /var/cache/apk/*
 
-# Configure nginx - http
+# Configure nginx
 COPY config/nginx.conf /etc/nginx/nginx.conf
-# Configure nginx - default server
 COPY config/conf.d /etc/nginx/conf.d/
 
 # Configure PHP-FPM
@@ -35,20 +34,17 @@ COPY config/php.ini /usr/local/etc/php/conf.d/custom.ini
 # Configure supervisord
 COPY config/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
-# Make sure files/folders needed by the processes are accessable when they run under the www-data user
-RUN chown -R www-data.www-data /app /run /var/lib/nginx /var/log/nginx
+# Fix permissions
+RUN chown -R www-data:www-data /app /run /var/lib/nginx /var/log/nginx
 
-# Switch to use a non-root user from here on
-# USER www-data
-
-# Add application
+# Add application source
 COPY --chown=www-data src/ /app/
 
-# Expose the port nginx is reachable on
+# Expose the port
 EXPOSE $PORT
 
-# Let supervisord start nginx & php-fpm
+# Start services
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
 
-# Configure a healthcheck to validate that everything is up&running
-HEALTHCHECK --timeout=10s CMD curl --silent --fail http://127.0.0.1:${PHP_FPM_VERSION}/fpm-ping
+# Healthcheck - use PORT (not PHP_FPM_VERSION)
+HEALTHCHECK --timeout=10s CMD curl --silent --fail http://127.0.0.1:${PORT}/fpm-ping || exit 1
