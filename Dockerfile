@@ -1,5 +1,8 @@
 ARG PHP_FPM_VERSION=8.1-fpm-alpine
 
+ENV PORT=8080
+ENV APP_ROOT=/app # for public path, ex: /app/public
+
 FROM php:${PHP_FPM_VERSION}
 LABEL Maintainer="Hải Phạm <contact@haipham.net>"
 LABEL Description="Lightweight container with Nginx 1.24 & PHP based on Alpine Linux."
@@ -42,10 +45,10 @@ RUN chown -R www-data.www-data /app /run /var/lib/nginx /var/log/nginx
 COPY --chown=www-data src/ /app/
 
 # Expose the port nginx is reachable on
-EXPOSE 8080
+EXPOSE $PORT
 
 # Let supervisord start nginx & php-fpm
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
 
 # Configure a healthcheck to validate that everything is up&running
-HEALTHCHECK --timeout=10s CMD curl --silent --fail http://127.0.0.1:8080/fpm-ping
+HEALTHCHECK --timeout=10s CMD curl --silent --fail http://127.0.0.1:${PHP_FPM_VERSION}/fpm-ping
